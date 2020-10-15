@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+origin = 1
+Distance= []
 
 # %%
 ''' 
@@ -38,8 +40,7 @@ def read_txt_input(path='./input/data.txt'):
             city_count = arr[i][1]
     print(f'city_count={city_count}')
 
-
-    #Distance=np.zeros([city_count,city_count])   # the number of the city
+    global Distance
     arr1 = [[float('inf')]*city_count]*city_count
     Distance = np.array(arr1)
     for i,item in enumerate(arr):
@@ -48,11 +49,13 @@ def read_txt_input(path='./input/data.txt'):
     print(f'Distance=\n{Distance}')
     return np.array(Distance)
 
+# 计算距离
 def get_total_distance(x):
     '''
     x: an individual
     distance: distance of the individua
     '''
+    global origin, Distance
     distance = 0
     distance += Distance[origin][x[0]]
     for i in range(len(x)):
@@ -63,7 +66,7 @@ def get_total_distance(x):
     return distance
 
 #改良
-def improve(x):
+def improve(x, improve_count=10000):
     i=0
     distance=get_total_distance(x)
     while i<improve_count:
@@ -83,7 +86,7 @@ def improve(x):
             continue
         i+=1
 #自然选择
-def selection(population):
+def selection(population, retain_rate=0.3, random_select_rate=0.5):
     """
     选择
     先对适应度从大到小排序，选出存活的染色体
@@ -102,7 +105,7 @@ def selection(population):
     return parents
 
 #交叉繁殖
-def crossover(parents):
+def crossover(parents, count=300):
     #生成子代的个数,以此保证种群稳定
     target_count=count-len(parents)
     #孩子列表
@@ -137,7 +140,7 @@ def crossover(parents):
     return children
 
 #变异
-def mutation(children):
+def mutation(children, mutation_rate=0.1):
     for i in range(len(children)):
         if random.random() < mutation_rate:
             child=children[i]
@@ -153,7 +156,8 @@ def get_result(population):
     graded = sorted(graded)
     return graded[0][0],graded[0][1]
 
-def TSP_run(count=300,
+def TSP_run(city_count,
+            count=300,
             improve_count=10000,
             itter_time=300,
             retain_rate=0.3,
