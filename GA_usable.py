@@ -48,16 +48,12 @@ def read_txt_input(path='./input/data.txt'):
     print(f'Distance=\n{Distance}')
     return np.array(Distance)
 
-
-if __name__ == '__main__':
-    # %%
-    count=300  #种群数
-    improve_count=10000 #改良次数
-    itter_time=300 #进化次数
-    retain_rate=0.3 #设置强者的定义概率，即种群前30%为强者
-    random_select_rate=0.5 #设置弱者的存活概率
-    mutation_rate=0.1  #变异率
-    
+def TSP_run(count=300,
+    improve_count=10000 ,
+    itter_time=300 ,
+    retain_rate=0.3 ,
+    random_select_rate=0.5 ,
+    mutation_rate=0.1):
     origin=1  #设置起点
     index=[i for i in range(city_count)]
     index.remove(1)
@@ -193,17 +189,18 @@ if __name__ == '__main__':
         distance,result_path=get_result(population)
         register.append(distance)
         i=i+1 
+    # output
     print(distance)
     print(result_path)
-
-
-    # %%
     result_path=[origin]+result_path+[origin]
     plt.plot(list(range(len(register))),register)
     plt.show()
 
+if __name__ == '__main__':
+    pass
 
-    # %%
+
+
     '''
     m = int(input())
     grid = [[] for i in range(m)]
