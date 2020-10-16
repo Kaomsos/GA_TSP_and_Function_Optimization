@@ -7,7 +7,7 @@ from IPython.display import display
 from GA_usable import read_txt_input, TSP_run
 from time import sleep, time
 
-def TSP_app():
+def TSP_app(): 
 # some global/enclosing variables
     city_count = 0 
     # %%
