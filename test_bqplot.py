@@ -8,14 +8,8 @@ def target_function(x):
 X = np.linspace(0, 1, 1000)
 y = np.array([target_function(x) for x in X])
 population = np.random.rand(30)
-plt.plot(X, y)
-plt.show()
 
 
-# %%
-# bqplt.plot(X,y)
-# bqplt.show()
-# %%
 x_sc = LinearScale()
 y_sc = LinearScale()
 
@@ -28,6 +22,11 @@ scatter = Scatter(x=population, y=np.array([target_function(ind) for ind in popu
 x_ax = Axis(label='X', scale=x_sc)
 y_ax = Axis(label='Y', scale=y_sc, orientation='vertical')
 
+x_ax.min = 0
+x_ax.max = 1
+x_ax.num_ticks = 7
+x_ax.grid_color = 'orangered'
+
 fig = Figure(marks=[ref, scatter], title='A Figure', axes=[x_ax, y_ax],
                 animation_duration=1000)
 fig
@@ -36,5 +35,7 @@ scatter.x=np.random.rand(30)
 scatter.y=np.array([target_function(ind) for ind in scatter.x])
 
 # %%
+from ipywidgets import widgets
 
+math_expression = widgets.Label(r'\( f(x) = \exp(-(x-0.1)^2)\times\sin^2(6\pi x^{3/4}) \)')
 # %%
