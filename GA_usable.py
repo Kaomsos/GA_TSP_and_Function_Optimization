@@ -2,11 +2,13 @@
 # To add a new markdown cell, type '# %% [markdown]'
 # %%
 import math
+from IPython.display import display, clear_output
 import random
 import matplotlib
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from time import time
 
 origin = 1
 Distance= []
@@ -47,7 +49,7 @@ def read_txt_input(path='./input/data.txt'):
         Distance[arr[i,0]-1,arr[i,1]-1] = arr[i,2]
         Distance[arr[i,1]-1,arr[i,0]-1] = arr[i,2]
     print(f'Distance=\n{Distance}')
-    return np.array(Distance)
+    return city_count, np.array(Distance)
 
 # 计算距离
 def get_total_distance(x):
@@ -71,7 +73,7 @@ def improve(x, improve_count=10000):
     distance=get_total_distance(x)
     while i<improve_count:
         # randint [a,b]
-        u=random.randint(0,len(x)-1)
+        u = random.randint(0,len(x)-1)
         v = random.randint(0, len(x)-1)
         if u!=v:
             new_x=x.copy()
@@ -158,12 +160,13 @@ def get_result(population):
 
 def TSP_run(city_count,
             count=300,
-            improve_count=10000,
+            improve_count=10000 ,
             itter_time=300,
             retain_rate=0.3,
             random_select_rate=0.5,
             mutation_rate=0.1):
-    
+    start = time()
+    print('TSP is running')
     origin=1  #设置起点
     index=[i for i in range(city_count)]
     index.remove(1)
@@ -174,32 +177,44 @@ def TSP_run(city_count,
         #随机生成个体
         x=index.copy()
         random.shuffle(x)
-        improve(x)
+        improve(x, improve_count=improve_count)
         population.append(x) 
     register=[]
     i=0
+
     distance, result_path = get_result(population)
-    # %%
+    print('entering the iter loop')
     while i<itter_time:
         #选择繁殖个体群
-        parents=selection(population)
+        parents=selection(population, retain_rate=retain_rate, random_select_rate=random_select_rate)
         #交叉繁殖
-        children=crossover(parents)
+        children=crossover(parents, count=count)
         #变异操作
-        mutation(children)
+        mutation(children, mutation_rate=mutation_rate)
         #更新种群
         population=parents+children
         distance,result_path=get_result(population)
         register.append(distance)
-        i=i+1 
+        i=i+1
+        clear_output(wait=True)
+        display(f'iteration:{i}') 
+    end = time()
     # output
-    print(distance)
-    print(result_path)
+    print(f'运行时间：{end-start}s')
+    print(f'距离为：{distance}')
+    print(f'路径为：{[1]+result_path}')
     result_path=[origin]+result_path+[origin]
     plt.plot(list(range(len(register))),register)
+    plt.xlabel('iteration number')
+    plt.ylabel('distance of the best')
     plt.show()
     return distance, result_path
 
+def set_distance(arr):
+    global Distance
+    Distance = arr
+
+# %%
 if __name__ == '__main__':
     pass
 
