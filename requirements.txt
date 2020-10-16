@@ -1,0 +1,6 @@
+ipywidgets
+ipyfilechooser
+ipysheet
+numpy
+bqplot
+pandas
